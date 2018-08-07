@@ -3,16 +3,22 @@ require 'json'
 require 'pry'
 
 
+
+def grab_json(url)
+    response_string = RestClient.get(url)
+    response_hash = JSON.parse(response_string)
+    return response_hash
+  end
+
+
 def get_character_movies_from_api(character)
   #make the web request
 
   films_array = []
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
-  response_hash = JSON.parse(response_string)
-
+  response_hash = grab_json('http://www.swapi.co/api/people/')
 
   response_hash["results"].each do |results_hash|
-    results_hash["name"]
+    #results_hash["name"]
 
     if character == results_hash["name"].downcase
       films_array = results_hash["films"]
@@ -40,9 +46,8 @@ end
 def print_movies(films_array)
   if films_array.length > 0
     for i in 0..films_array.length-1 do
-      response_string = RestClient.get(films_array[i])
-      response_hash = JSON.parse(response_string)
-      puts "#{i+1}. #{response_hash["title"]}"
+      response_string = grab_json(films_array[i])
+      puts "#{i+1}. #{response_string["title"]}"
     end
   else
     puts "The person you input is not a character in the Starwars movie Universe"
