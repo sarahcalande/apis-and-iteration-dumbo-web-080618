@@ -16,14 +16,15 @@ def get_character_movies_from_api(character)
 
   films_array = []
   response_hash = grab_json('http://www.swapi.co/api/people/')
+  while response_hash["next"] != nil do
+    response_hash["results"].each do |results_hash|
+        #results_hash["name"]
+        if character == results_hash["name"].downcase
+          films_array = results_hash["films"]
+        end
 
-  response_hash["results"].each do |results_hash|
-    #results_hash["name"]
-
-    if character == results_hash["name"].downcase
-      films_array = results_hash["films"]
     end
-
+    response_hash = grab_json(response_hash["next"])
   end
 
   films_array
